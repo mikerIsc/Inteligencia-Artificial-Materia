@@ -18,8 +18,8 @@
       Class 9         0.98       1.00      0.99       1828
 
       accuracy                             0.82      15426
-      macro avg       0.84       0.81      0.81      15426
-      weighted avg    0.83       0.82      0.82      15426
+     macro avg        0.84       0.81      0.81      15426
+  weighted avg        0.83       0.82      0.82      15426
 
 
 ##Sin carpeta o clase  americano:
@@ -69,9 +69,7 @@ precision    recall  f1-score   support
      Class 6       0.77      0.90      0.83      2080
      Class 7       0.94      0.94      0.94      1037
      Class 8       0.97      1.00      0.99      1745
-
-
-
+     
     accuracy                           0.87     13556
    macro avg       0.88      0.85      0.85     13556
 weighted avg       0.87      0.87      0.86     13556
