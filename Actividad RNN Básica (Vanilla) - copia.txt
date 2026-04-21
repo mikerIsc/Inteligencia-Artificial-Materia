@@ -1,0 +1,72 @@
+# Actividad RNN Básica (Vanilla)
+
+## El Termómetro de las Emociones  
+Imagina que eres una **Vanilla RNN** y tu tarea es predecir tu "Estado de Ánimo General" al final del día.  
+La fórmula simplificada es:
+
+\[
+h_t = x_t + \alpha \cdot h_{t-1}
+\]
+
+- \(x_t\): Evento del día  
+- \(h_{t-1}\): Estado oculto anterior (memoria)  
+- \(\alpha\): Fracción de memoria retenida (ejemplo: 0.5)
+
+---
+
+## Misión 1: El Lunes Increíble (Desvanecimiento)
+
+- Día 1 (Lunes): Evento = +10 → Estado = 10  
+- Día 2: Evento = 0 → Estado = \(0 + 0.5 \cdot 10 = 5\)  
+- Día 3: Evento = 0 → Estado = \(0 + 0.5 \cdot 5 = 2.5\)  
+- Día 4: Evento = 0 → Estado = \(0 + 0.5 \cdot 2.5 = 1.25\)  
+- Día 5 (Viernes): Evento = 0 → Estado = \(0 + 0.5 \cdot 1.25 = 0.625\)  
+
+**Resultado:** La gran alegría del lunes casi desaparece para el viernes.
+
+---
+
+## Misión 2: El Rescate Emocional (Superando el Pasado)
+
+- Día 1: Evento = -6 → Estado = -6  
+- Día 2: Evento = -4 → Estado = \(-4 + 0.5 \cdot -6 = -7\)  
+- Día 3: Evento = 0 → Estado = \(0 + 0.5 \cdot -7 = -3.5\)  
+- Día 4: Evento = ? → Estado = \(x_4 + 0.5 \cdot -3.5 = x_4 - 1.75\)  
+
+Para que el estado sea positivo:  
+\[
+x_4 - 1.75 > 0 \quad \Rightarrow \quad x_4 > 1.75
+\]
+
+**Resultado:** El evento del Día 4 debe ser mayor a +2 para revertir la negatividad acumulada.
+
+---
+
+## Misión 3: Constancia vs. El Pico
+
+### Escenario A: Un pico inicial
+- Día 1: Evento = +10 → Estado = 10  
+- Día 2: Estado = 5  
+- Día 3: Estado = 2.5  
+- Día 4: Estado = 1.25  
+- Día 5: Estado = 0.625  
+
+**Resultado final:** 0.625
+
+---
+
+### Escenario B: Pequeñas alegrías constantes (+3 cada día)
+- Día 1: Estado = 3  
+- Día 2: \(3 + 0.5 \cdot 3 = 4.5\)  
+- Día 3: \(3 + 0.5 \cdot 4.5 = 5.25\)  
+- Día 4: \(3 + 0.5 \cdot 5.25 = 5.625\)  
+- Día 5: \(3 + 0.5 \cdot 5.625 = 5.8125\)  
+
+**Resultado final:** 5.8125
+
+---
+
+## Conclusión
+- La memoria de la Vanilla RNN se observa que se desvanece rápidamente.  
+- Un gran evento aislado pierde fuerza con el tiempo.  
+- La constancia de pequeños eventos positivos tiene más impacto a largo plazo.  

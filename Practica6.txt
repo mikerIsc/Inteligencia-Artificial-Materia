@@ -1,0 +1,321 @@
+           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             ACTIVIDAD 2: EL ENIGMA DEL ORÁCULO SECUENCIAL:
+                      ANATOMÍA DE UNA VANILLA RNN
+
+                            Eduardo Alcaraz
+           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Table of Contents
+─────────────────
+
+1. 1. El Acertijo: El Guardián del Tiempo
+2. 2. Actividades de Comprensión (Para el Alumno)
+.. 1. Actividad 2.1: Mapeo de Variables
+.. 2. Actividad 2.2: El Análisis de Dimensionalidad (El tamaño de los peajes)
+.. 3. Actividad 2.3: La Estrofa Perdida (Pensamiento Lateral)
+.. 4. Actividad 2.4: El Límite del Muro Curvo (Análisis de Saturación)
+.. 5. Actividad 2.5: El Eco del Castigo (Trazo del Gradiente)
+.. 6. Actividad 2.6: Depuración del Oráculo (Inspección de Código NumPy)
+
+
+1 1. El Acertijo: El Guardián del Tiempo
+════════════════════════════════════════
+
+  Lee atentamente las siguientes líneas. Cada estrofa describe un
+  componente matemático exacto de una celda recurrente básica. ¿Puedes
+  identificar a qué variable, matriz o función se refiere cada una antes
+  de leer la disección?
+
+        Soy la novedad pura, el pulso del instante, la matriz de
+        características que el mundo me da en este segundo.
+
+        Pero soy ciego sin mi compañero, el fantasma del pasado,
+        que trae consigo el resumen de todo lo que hemos vivido
+        hasta ayer.
+
+        Para unirnos, cruzamos por peajes inmutables, barreras que
+        multiplican nuestra importancia y deciden qué tanto
+        valemos.
+
+        Juntos, sumados a un pequeño desvío inevitable, chocamos
+        contra un muro curvo que nos comprime entre el -1 y el 1,
+        evitando que nuestra energía explote hacia el infinito.
+
+        Al salir de esa curva, nazco yo, una nueva identidad.  Soy
+        tu estado actual, la respuesta de hoy, y estoy listo para
+        ser el fantasma de tu mañana.
+
+
+2 2. Actividades de Comprensión (Para el Alumno)
+════════════════════════════════════════════════
+
+  Antes de avanzar a la disección analítica, resuelve los siguientes
+  retos para poner a prueba tu intuición matemática sobre la
+  arquitectura del modelo.
+
+
+2.1 Actividad 2.1: Mapeo de Variables
+─────────────────────────────────────
+
+  Dada la ecuación fundamental de la Vanilla RNN: $$h_t = \tanh(W_{hx}
+  x_t + W_{hh} h_{t-1} + b)$$
+
+  Identifica y escribe la frase exacta del poema que hace referencia a
+  cada uno de los siguientes componentes matemáticos:
+  $x_t$_"Soy la novedad pura, el pulso del instante, la matriz de características que el mundo me da en este segundo".
+  
+
+  $h_{t-1}$ "el fantasma del pasado, que trae consigo el resumen de todo lo que hemos vivido hasta ayer."
+
+  
+  $W_{hx}, W_{hh}$ "cruzamos por peajes inmutables, barreras que multiplican nuestra importancia y deciden qué tanto valemos."
+
+  
+  $b$ "sumados a un pequeño desvío inevitable"
+  
+
+  $\tanh$ "chocamos contra un muro curvo que nos comprime entre el -1 y el 1"
+
+  
+  $h_t$ "Al salir de esa curva, nazco yo, una nueva identidad. Soy tu estado actual, la respuesta de hoy"
+
+
+2.2 Actividad 2.2: El Análisis de Dimensionalidad (El tamaño de los peajes)
+───────────────────────────────────────────────────────────────────────────
+
+  Supón que estás diseñando esta red para procesar secuencias de
+  datos. Si la "novedad pura" ($x_t$) es un vector de entrada con
+  características de dimensión $\mathbb{R}^{20}$ y decides que el
+  "fantasma del pasado" ($h_{t-1}$) requiere una capacidad de memoria
+  representada en un espacio oculto de dimensión $\mathbb{R}^{64}$.
+
+  Calcula y justifica matemáticamente:
+  1. Las dimensiones exactas requeridas para la matriz $W_{hx}$.
+  2. Las dimensiones exactas requeridas para la matriz recurrente
+     $W_{hh}$.
+  3. La dimensión final del vector resultante $h_t$.
+
+
+# Análisis de Dimensionalidad (Vanilla RNN)
+
+## Datos
+- \(x_t \in \mathbb{R}^{20}\) → Entrada de 20 dimensiones  
+- \(h_{t-1} \in \mathbb{R}^{64}\) → Estado oculto de 64 dimensiones  
+
+---
+
+## Cálculos
+
+### Dimensiones de \(W_{hx}\)
+- **Objetivo:** Transformar entrada de 20 dimensiones a 64 dimensiones (tamaño del estado oculto).  
+- \(W_{hx} \in \mathbb{R}^{64 \times 20}\)  
+
+**Justificación:**  
+
+
+\[
+W_{hx} \cdot x_t = \mathbb{R}^{64 \times 20} \cdot \mathbb{R}^{20 \times 1} = \mathbb{R}^{64 \times 1}
+\]
+
+
+
+---
+
+### Dimensiones de \(W_{hh}\)
+- **Objetivo:** Mantener el estado oculto en 64 dimensiones.  
+- \(W_{hh} \in \mathbb{R}^{64 \times 64}\)  
+
+**Justificación:**  
+
+
+\[
+W_{hh} \cdot h_{t-1} = \mathbb{R}^{64 \times 64} \cdot \mathbb{R}^{64 \times 1} = \mathbb{R}^{64 \times 1}
+\]
+
+
+
+---
+
+### Dimensión de \(h_t\)
+- **Resultado:**  
+
+
+\[
+h_t \in \mathbb{R}^{64}
+\]
+
+
+
+**Justificación:**  
+
+
+\[
+\tanh(\mathbb{R}^{64}) = \mathbb{R}^{64}
+\]
+
+
+
+La función \(\tanh\) se aplica elemento a elemento, manteniendo la dimensión.  
+
+---
+
+## Conclusión
+- La entrada (\(x_t\)) de 20 dimensiones se proyecta a 64 mediante \(W_{hx}\).  
+- El estado anterior (\(h_{t-1}\)) de 64 dimensiones se transforma con \(W_{hh}\).  
+- El nuevo estado oculto (\(h_t\)) conserva las 64 dimensiones tras aplicar la función de activación.  
+
+
+
+2.3 Actividad 2.3: La Estrofa Perdida (Pensamiento Lateral)
+───────────────────────────────────────────────────────────
+
+  En el poema original, el vector de sesgo (bias) $b$ apenas se menciona
+  como "un pequeño desvío inevitable". Sabiendo que en álgebra lineal el
+  sesgo permite desplazar la función de activación para evitar que pase
+  rígidamente por el origen, **redacta una estrofa corta** (manteniendo
+  el tono literario del acertijo) que describa de manera exclusiva la
+  función y utilidad del parámetro $b$.
+
+# Estrofa sobre el sesgo \(b\)
+
+Pequeño empujón que nunca ve el ojo,  
+desplaza la curva para que no nazca en cero;  
+sin ruido ni estruendo, abre puertas al sentido,  
+y permite que la señal encuentre su propio sendero.
+
+
+2.4 Actividad 2.4: El Límite del Muro Curvo (Análisis de Saturación)
+────────────────────────────────────────────────────────────────────
+
+  El acertijo menciona que el muro curvo ($\tanh$) evita que "nuestra
+  energía explote hacia el infinito".
+  1. Grafica mentalmente o en papel la función $f(z) = \tanh(z)$ y su
+     derivada $f'(z) = 1 - \tanh^2(z)$.
+  2. Si los valores de entrada y los pesos crecen descontroladamente y
+     el resultado de la suma lineal es $z = 500$, la salida del muro
+     curvo será casi exactamente $1$. ¿Qué le sucede a la derivada
+     $f'(500)$ en ese punto?
+  3. Explica brevemente por qué este fenómeno (conocido como saturación)
+     es catastrófico para el aprendizaje de la red.
+
+1. Gráficas mentales:
+
+tanh⁡(z)\tanh(z)
+tanh(z) es una función sigmoide suave que va de −1-1
+−1 a 11
+1
+Su derivada es ddztanh⁡(z)=1−tanh⁡2(z)\frac{d}{dz}\tanh(z) = 1 - \tanh^2(z)
+dzd​tanh(z)=1−tanh2(z), que es máxima en z=0z=0
+z=0 (valor =1=1
+=1) y decrece hacia 0 en los extremos
+
+2. En el punto z=500z = 500
+z=500:
+
+tanh⁡(500)≈1.0\tanh(500) \approx 1.0
+tanh(500)≈1.0 (saturado)
+f′(500)=1−tanh⁡2(500)=1−12=0f'(500) = 1 - \tanh^2(500) = 1 - 1^2 = 0
+f′(500)=1−tanh2(500)=1−12=0 (aproximadamente cero)
+
+3. Catástrofe de saturación:
+La saturación es destructiva para el aprendizaje porque:
+
+Cuando f′(z)≈0f'(z) \approx 0
+f′(z)≈0, el gradiente que propaga hacia atrás se vuelve casi cero
+En BPTT, este gradiente se multiplica recursivamente en tiempo: ∂ht∂ht−k=∏i=0k−1∂ht−i∂ht−i−1\frac{\partial h_t}{\partial h_{t-k}} = \prod_{i=0}^{k-1} \frac{\partial h_{t-i}}{\partial h_{t-i-1}}
+∂ht−k​∂ht​​=∏i=0k−1​∂ht−i−1​∂ht−i​​
+Si cada factor es <0.1< 0.1
+<0.1, el producto desaparece exponencialmente → vanishing gradients
+Los pesos WhxW_{hx}
+Whx​ y WhhW_{hh}
+Whh​ reciben actualizaciones ínfimas y no se entrenan
+
+
+
+2.5 Actividad 2.5: El Eco del Castigo (Trazo del Gradiente)
+───────────────────────────────────────────────────────────
+
+  El aprendizaje en una RNN se realiza propagando el error hacia atrás
+  en el tiempo (BPTT). Supón que la red cometió un error en su
+  "respuesta de hoy" ($h_t$). Para corregirlo, la red debe enviar una
+  señal de castigo hacia atrás para ajustar los pesos.  Siguiendo la
+  narrativa del acertijo: Describe qué "peajes" y "muros" debe atravesar
+  el error en reversa para llegar desde $h_t$ y poder modificar la
+  percepción del "fantasma del pasado" ($h_{t-1}$). ¿Qué operación
+  matemática del cálculo diferencial representa este viaje en reversa?
+
+### Descripción
+En una Red Neuronal Recurrente (RNN), cuando se comete un error en la salida actual \( h_t \), este error no solo afecta el presente, sino que debe viajar hacia el pasado para ajustar cómo se generaron los estados anteriores, como \( h_{t-1} \). A este proceso se le conoce como **Backpropagation Through Time (BPTT)**.
+
+### El viaje del error: “peajes” y “muros”
+
+Imaginando el proceso como un camino en reversa:
+
+- **Peajes (multiplicaciones por pesos):**  
+  El error debe atravesar conexiones ponderadas (matrices de pesos), especialmente la matriz recurrente \( W_h \). En cada paso hacia atrás, el error se multiplica por estos pesos, lo que puede amplificarlo o reducirlo.
+
+- **Muros (funciones de activación):**  
+  En cada neurona, el error también debe atravesar funciones de activación (como `tanh` o `sigmoid`). Estas funciones tienen derivadas que generalmente son valores pequeños (entre 0 y 1), lo que puede debilitar aún más la señal del error.
+
+### Problema clave: desvanecimiento o explosión del gradiente
+
+Debido a estos “peajes” y “muros”:
+
+- Si los valores multiplicados son **menores que 1**, el error se hace cada vez más pequeño → **gradiente desvanecido**.
+- Si son **mayores que 1**, el error crece demasiado → **gradiente explosivo**.
+
+Esto dificulta que la red aprenda dependencias a largo plazo.
+
+### ¿Qué operación matemática representa este viaje?
+
+Este proceso se basa en la aplicación repetida de la:
+
+## Regla de la cadena (Chain Rule)
+
+:contentReference[oaicite:0]{index=0}
+
+La **regla de la cadena** del cálculo diferencial permite calcular cómo cambia el error respecto a estados anteriores. Es decir, descompone el gradiente en una serie de derivadas multiplicadas paso a paso hacia atrás en el tiempo.
+
+### Conclusión
+
+El “eco del castigo” es el gradiente viajando en reversa a través del tiempo, enfrentándose a múltiples transformaciones (pesos y activaciones). Este recorrido está gobernado matemáticamente por la **regla de la cadena**, y su comportamiento determina si la red logra aprender o no de su pasado.
+
+
+2.6 Actividad 2.6: Depuración del Oráculo (Inspección de Código NumPy)
+──────────────────────────────────────────────────────────────────────
+
+  A continuación se presenta un intento de programar el oráculo en
+  Python. Sin embargo, el programador junior cometió **un grave error
+  algorítmico y matemático** en la línea 4 que provocará un colapso en
+  la dimensionalidad o un cálculo erróneo.
+
+  ┌────
+  │ def paso_rnn_erroneo(x_t, h_prev, W_hx, W_hh, b):
+  │     # Línea con error oculto
+  │     combinacion = (W_hx * x_t) + (W_hh * h_prev) + b
+  │     return np.tanh(combinacion)
+  └────
+
+  1. Identifica cuál es el error matemático exacto al usar el operador
+     `*' en NumPy para este contexto matricial.
+  2. Reescribe la línea de código utilizando la operación correcta
+     dictada por el álgebra lineal para transformaciones afines.
+
+
+
+## 1. Identificación del error
+El error matemático exacto está en el uso del operador `*` en NumPy.  
+- En este contexto, `*` realiza **multiplicación elemento a elemento (Hadamard product)**.  
+- Lo correcto sería aplicar una **multiplicación matricial** (producto punto), ya que queremos transformar vectores mediante matrices.  
+- Usar `*` provocará un colapso dimensional o un cálculo erróneo porque las dimensiones no coinciden para una multiplicación elemento a elemento.
+
+---
+
+## 2. Corrección de la línea de código
+La operación correcta dictada por el álgebra lineal es el producto matricial.  
+En NumPy se logra con `@` (operador de producto matricial) o con `np.dot`.
+
+```python
+combinacion = (W_hx @ x_t) + (W_hh @ h_prev) + b
+
